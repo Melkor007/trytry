@@ -1,6 +1,10 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="sup man?"/>
+  <div id="app">
+    <el-button type="primary">主要按钮</el-button>
+    <img alt="Vue logo" src="./assets/logo.png">
+    <HelloWorld msg="sup man?"/>
+  </div>
+
 </template>
 
 <script>
