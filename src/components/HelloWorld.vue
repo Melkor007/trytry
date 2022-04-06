@@ -1,13 +1,12 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
-    <input type="text" v-model="username"
-           placeholder="请输入用户名">
+    <input type="text" v-model="question"
+           placeholder="请输入问题" @keyup.enter="qa()">
     <br>
-    <input type="password" v-model="password"
-    placeholder="请输入密码" @keyup.enter="login">
+      <textarea cols="100" rows="10" v-model="answer"></textarea>
     <br>
-    <button @click="login">click me!</button>
+    <el-button type="primary" @click="qa()">Click me</el-button>
   </div>
 </template>
 
@@ -21,35 +20,41 @@ export default {
   data() {
     return{
       loginn:false,
-      username:'',
-      password:''
+      question:'请输入您的问题',
+      answer:'答案会显示在这里'
     }
   },
   methods:{
-    login(){
+    testo(){
+      fetch('http://127.0.0.1:8888/test'
+      ).then(function(res){
+        console.log(res)
+        this.answer = res
+      })
+    },
+    qa(){
       this.loginn=true
-      fetch('http://localhost:8000/login',{
+      fetch('http://localhost:8888/kbqa',{
         method:'post',
         headers: {
           'Content-Type': 'application/json'
         },
         body:JSON.stringify({
-          username:this.username,
-          password:this.password
+          question:this.question,
         })
       }).then(res=>res.json()
       ).then(
           data=> {
             console.log(data)
+            this.answer = 'neo4j查询结果：'+data.answer
+            let entity = data.entity
+            let mention = data.mention
+            let intention = data.intention
+            this.answer += '\n实体识别：'+mention
+            this.answer += '\n实体链接：'+entity
+            this.answer += '\n意图识别：'+intention
             if (data.code===200){
-                // Message.success({
-                //   content:'登录成功',
-                //   duration:0.3})
-            }
-            else{
-              // Message.error({
-              //   content:'登录失败请重试',
-              //   duration:1.0})
+                this.$message.success('success')
             }
           }
       )
